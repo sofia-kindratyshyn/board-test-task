@@ -1,15 +1,15 @@
 import express from 'express';
 import { getEnvVar } from './utils/getEnv';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import pino from 'pino-http';
 import { errorHandler } from './middlewars/errorHandler';
+import { boardRouter } from './routers/board';
 
 const PORT = Number(getEnvVar('PORT'));
 
-export default async function setupServer() {
-  const app = express();
+export const app = express();
 
+export default async function setupServer() {
   app.use(express.json());
 
   app.use(
@@ -21,7 +21,8 @@ export default async function setupServer() {
     }),
   );
 
-  app.use(cookieParser());
+  app.use('/boards', boardRouter);
+  app.use('/tasks', boardRouter);
 
   app.use(errorHandler);
 
