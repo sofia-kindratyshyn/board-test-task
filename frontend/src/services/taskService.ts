@@ -29,7 +29,7 @@ export const deleteTask = async (boardId: string, taskId: string) => {
   }
 };
 
-export const updateTask = async (boardId: string, taskId: string, taskData: Task) => {
+export const updateTask = async (boardId: string, taskId: string, taskData: Partial<Task>) => {
   try {
     const tasks = await axios.patch(`/boards/${boardId}/tasks/${taskId}`, taskData);
     return tasks.data;

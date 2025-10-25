@@ -2,8 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import type { Task } from '../../types/task';
-import { deleteTask, getTasks } from '../../services/taskService';
+import { deleteTask, getTasks, updateTask } from '../../services/taskService';
 import { toast, ToastContainer } from 'react-toastify';
+import { DndContext } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+
+import { Droppable } from '../../components/Dropable';
 import styles from './BoardColumn.module.css';
 import TaskCard from '../../components/TaskCard/TaskCard';
 import AddTaskModal from '../../components/NewTaskModalForm/NewTaskModal';
@@ -13,7 +17,6 @@ export default function BoardColumn() {
   const queryClient = useQueryClient();
   const [modalData, setModalData] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const navigate = useNavigate();
 
   const { data, isPending, error } = useQuery<Task[]>({
@@ -30,6 +33,14 @@ export default function BoardColumn() {
     },
   });
 
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ taskId, status }: { taskId: string; status: Task['status'] }) =>
+      updateTask(boardId!, taskId, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks', boardId] });
+    },
+  });
+
   const handleTaskSaved = () => {
     queryClient.invalidateQueries({ queryKey: ['tasks', boardId] });
   };
@@ -41,6 +52,15 @@ export default function BoardColumn() {
     setIsModalOpen(true);
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const newStatus = over?.id as Task['status'];
+      updateStatusMutation.mutate({ taskId: active.id as string, status: newStatus });
+    }
+  };
+
   if (isPending) return <p>Loading tasks...</p>;
   if (error) return <p>Failed to load tasks</p>;
 
@@ -49,58 +69,63 @@ export default function BoardColumn() {
   const done = data?.filter((task) => task.status === 'Done') ?? [];
 
   return (
-    <main className={styles.board}>
-      <ToastContainer />
-      <div className={styles.boardHeaderContainer}>
-        <h1 className={styles.title}>Project Board #{boardId}</h1>
-        <button className={styles.backButton} onClick={() => navigate('/boards-list')}>
-          ← Back to board list
+    <DndContext onDragEnd={handleDragEnd}>
+      <main className={styles.board}>
+        <ToastContainer />
+        <div className={styles.boardHeaderContainer}>
+          <h1 className={styles.title}>Project Board #{boardId}</h1>
+          <button className={styles.backButton} onClick={() => navigate('/boards-list')}>
+            ← Back to board list
+          </button>
+        </div>
+
+        <div className={styles.columns}>
+          {[
+            { status: 'ToDo', tasks: todo },
+            { status: 'In Progress', tasks: inProgress },
+            { status: 'Done', tasks: done },
+          ].map(({ status, tasks }) => (
+            <Droppable key={status} id={status}>
+              <section className={styles.column}>
+                <div className={styles.columnContainer}>
+                  <h2 className={styles.columnTitle}>{status}</h2>
+                  <p>({tasks.length} tasks)</p>
+                </div>
+                {tasks.map((task) => (
+                  <TaskCard
+                    key={task._id}
+                    id={task._id}
+                    title={task.title}
+                    description={task.description}
+                    onDelete={handleDelete}
+                    onUpdate={() => handleUpdate(task)}
+                  />
+                ))}
+              </section>
+            </Droppable>
+          ))}
+        </div>
+
+        <button
+          className={styles.createBtn}
+          onClick={() => {
+            setModalData(null);
+            setIsModalOpen(true);
+          }}
+        >
+          + Create task for this board
         </button>
-      </div>
 
-      <div className={styles.columns}>
-        {['To Do', 'In Progress', 'Done'].map((status) => {
-          const tasks = status === 'To Do' ? todo : status === 'In Progress' ? inProgress : done;
-          return (
-            <section key={status} className={styles.column}>
-              <div className={styles.columnContainer}>
-                <h2 className={styles.columnTitle}>{status}</h2>
-                <p>({tasks.length} tasks)</p>
-              </div>
-              {tasks.map((task) => (
-                <TaskCard
-                  key={task._id}
-                  id={task._id}
-                  title={task.title}
-                  description={task.description}
-                  onDelete={handleDelete}
-                  onUpdate={() => handleUpdate(task)}
-                />
-              ))}
-            </section>
-          );
-        })}
-      </div>
-
-      <button
-        className={styles.createBtn}
-        onClick={() => {
-          setModalData(null);
-          setIsModalOpen(true);
-        }}
-      >
-        + Create task for this board
-      </button>
-
-      {isModalOpen && (
-        <AddTaskModal
-          isOpen={isModalOpen}
-          initialData={modalData ?? undefined}
-          boardId={boardId!}
-          onTaskSaved={handleTaskSaved}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
-    </main>
+        {isModalOpen && (
+          <AddTaskModal
+            isOpen={isModalOpen}
+            initialData={modalData ?? undefined}
+            boardId={boardId!}
+            onTaskSaved={handleTaskSaved}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
+      </main>
+    </DndContext>
   );
 }

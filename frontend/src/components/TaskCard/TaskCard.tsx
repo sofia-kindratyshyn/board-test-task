@@ -1,3 +1,4 @@
+import { Draggable } from '../Draggable';
 import styles from './TaskCard.module.css';
 
 type TaskCardProps = {
@@ -10,38 +11,40 @@ type TaskCardProps = {
 
 export default function TaskCard({ id, title, description, onDelete, onUpdate }: TaskCardProps) {
   return (
-    <div className={styles.task}>
-      <div className={styles.header}>
-        <h3 className={styles.title}>{title}</h3>
-      </div>
-
-      {description && (
-        <div className={styles.descriptionCntnr}>
-          <p className={styles.description}>{description}</p>
+    <Draggable id={`${id}`}>
+      <div className={styles.task}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>{title}</h3>
         </div>
-      )}
 
-      <div className={styles.actions}>
-        <button
-          className={`${styles.button} ${styles.delete}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (id && onDelete) onDelete(id);
-          }}
-        >
-          Delete
-        </button>
+        {description && (
+          <div className={styles.descriptionCntnr}>
+            <p className={styles.description}>{description}</p>
+          </div>
+        )}
 
-        <button
-          className={styles.button}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (id && onUpdate) onUpdate(id);
-          }}
-        >
-          Update
-        </button>
+        <div className={styles.actions}>
+          <button
+            className={`${styles.button} ${styles.delete}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (id && onDelete) onDelete(id);
+            }}
+          >
+            Delete
+          </button>
+
+          <button
+            className={styles.button}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (id && onUpdate) onUpdate(id);
+            }}
+          >
+            Update
+          </button>
+        </div>
       </div>
-    </div>
+    </Draggable>
   );
 }
