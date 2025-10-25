@@ -1,13 +1,15 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
 const boardSchema = new Schema(
   {
-    boardId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    columns: {
-      type: [String],
-      default: ['ToDo', 'In Progress', 'Done'],
-    },
+    description: { type: String },
+    tasks: [
+      {
+        type: Types.ObjectId,
+        ref: 'Task',
+      },
+    ],
   },
   { timestamps: true },
 );

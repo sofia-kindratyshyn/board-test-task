@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  deleteTaskByIdController,
   getTaskByIdController,
   getTasksController,
   patchTaskController,
@@ -12,4 +13,4 @@ taskRouter.get('/', getTasksController);
 taskRouter.get(`/:taskId`, getTaskByIdController);
 taskRouter.post('/', postTaskController);
 taskRouter.patch('/:taskId', patchTaskController);
-taskRouter.delete('/:taskId', patchTaskController);
+taskRouter.delete('/:taskId', deleteTaskByIdController);

@@ -2,9 +2,13 @@ import { Schema, model } from 'mongoose';
 
 const taskSchema = new Schema(
   {
-    boardId: { type: String, required: true },
     title: { type: String, required: true },
     description: { type: String, default: '' },
+    boardId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Board',
+      required: true,
+    },
     status: {
       type: String,
       enum: ['ToDo', 'In Progress', 'Done'],

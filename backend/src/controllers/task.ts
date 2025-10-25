@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { deleteTaskById, getTaskById, getTasks } from '../services/task';
+import {
+  createTask,
+  deleteTaskById,
+  getTaskById,
+  getTasks,
+  updateTask,
+} from '../services/task';
 
 export const getTasksController = async (
   req: Request,
@@ -42,10 +48,13 @@ export const postTaskController = async (
 ) => {
   try {
     const body = req.body;
-    console.log('Creating task with data:', body);
+    console.log(body);
+    const boardId = req.params.boardId;
+    const createdTask = await createTask(body, boardId);
     return res.json({
-      status: 200,
+      status: 201,
       message: 'Successfully created task',
+      data: createdTask,
     });
   } catch (error) {
     next(error);
@@ -59,10 +68,17 @@ export const patchTaskController = async (
 ) => {
   try {
     const body = req.body;
-    console.log('Updating task with data:', body);
+    const boardId = req.params.boardId;
+    const taskId = req.params.taskId;
+    const updatedTask = await updateTask({
+      boardId: boardId,
+      taskId: taskId,
+      ...body,
+    });
     return res.json({
       status: 200,
       message: 'Successfully updated task',
+      data: updatedTask,
     });
   } catch (error) {
     next(error);

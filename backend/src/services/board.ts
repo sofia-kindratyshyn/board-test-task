@@ -1,27 +1,61 @@
 import createHttpError from 'http-errors';
 import { Board } from '../models/board';
+import { Task } from '../models/task';
+import { CreateBoard } from '../types/board';
 
-export const getBoards = async () => {
+export const getBoards = async (search?: string) => {
   try {
-    const boards = await Board.find();
+    if (!search) {
+      return await Board.find();
+    }
+
+    const boards = await Board.aggregate([
+      {
+        $addFields: {
+          idString: { $toString: '$_id' },
+        },
+      },
+      {
+        $match: {
+          idString: { $regex: search, $options: 'i' },
+        },
+      },
+    ]);
+
     return boards;
   } catch {
     throw createHttpError(404, 'Error getting boards');
   }
 };
 
+export const createBoard = async (payload: CreateBoard) => {
+  try {
+    const boards = await Board.create(payload);
+    return boards;
+  } catch {
+    throw createHttpError(404, 'Error creating board');
+  }
+};
+
 export const getBoardById = async (boardId: string) => {
   try {
     const board = await Board.findById(boardId);
-    return board;
-  } catch {
-    throw createHttpError(404, `Error getting board with id: ${boardId}`);
+    if (!board) {
+      throw createHttpError(404, `Board with id ${boardId} not found`);
+    }
+
+    const tasks = await Task.find({ boardId });
+
+    return { board, tasks };
+  } catch (err) {
+    console.error('getBoardById error:', err);
+    throw err;
   }
 };
 
 export const deleteBoardById = async (boardId: string) => {
   try {
-    const board = await Board.findByIdAndDelete(boardId);
+    const board = await Board.findByIdAndDelete({ _id: boardId });
     return board;
   } catch {
     throw createHttpError(404, `Error deleting board with id: ${boardId}`);

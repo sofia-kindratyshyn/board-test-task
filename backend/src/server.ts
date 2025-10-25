@@ -4,10 +4,10 @@ import cors from 'cors';
 import pino from 'pino-http';
 import { errorHandler } from './middlewars/errorHandler';
 import { boardRouter } from './routers/board';
+import { app } from './app';
+import { taskRouter } from './routers/task';
 
 const PORT = Number(getEnvVar('PORT'));
-
-export const app = express();
 
 export default async function setupServer() {
   app.use(express.json());
@@ -22,7 +22,7 @@ export default async function setupServer() {
   );
 
   app.use('/boards', boardRouter);
-  app.use('/tasks', boardRouter);
+  app.use('/tasks', taskRouter);
 
   app.use(errorHandler);
 

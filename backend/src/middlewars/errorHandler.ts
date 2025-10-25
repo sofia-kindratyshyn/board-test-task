@@ -6,7 +6,7 @@ export const errorHandler = (
   req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _next: NextFunction,
+  next: NextFunction,
 ): void => {
   if (err instanceof HttpError) {
     res.status(err.statusCode || 500).json({
