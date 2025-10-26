@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { Task } from '../types/task';
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = import.meta.env.NEXT_PUBLIC_API_URL;
 
 export const getTasks = async (boardId: string) => {
   try {

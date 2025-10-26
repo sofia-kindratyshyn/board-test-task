@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { NewBoardFormValues } from '../types/board';
+axios.defaults.baseURL = import.meta.env.NEXT_PUBLIC_API_URL;
 
 export const getBoards = async (search?: string) => {
   try {
