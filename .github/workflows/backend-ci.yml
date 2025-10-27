@@ -32,7 +32,8 @@ jobs:
 
       - name: Install deps
         run: npm ci
+        working-directory: ./backend
 
       - name: Run ESLint
         run: npm run lint
-        working-directory: ./backend || .
+        working-directory: ./backend
