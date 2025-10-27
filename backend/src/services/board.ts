@@ -2,6 +2,7 @@ import createHttpError from 'http-errors';
 import { Board } from '../models/board';
 import { Task } from '../models/task';
 import { CreateBoard } from '../types/board';
+import mongoose from 'mongoose';
 
 export const getBoards = async (search?: string) => {
   try {
@@ -39,7 +40,12 @@ export const createBoard = async (payload: CreateBoard) => {
 
 export const getBoardById = async (boardId: string) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(boardId)) {
+      throw createHttpError(404, `Invalid board id: ${boardId}`);
+    }
+
     const board = await Board.findById(boardId);
+
     if (!board) {
       throw createHttpError(404, `Board with id ${boardId} not found`);
     }
