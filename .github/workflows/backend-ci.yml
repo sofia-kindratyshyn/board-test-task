@@ -40,5 +40,6 @@ jobs:
 
       - name: Run tests
         run: npm test --if-present --silent
+        working-directory: ./backend
         env:
           CI: true
