@@ -1,0 +1,22 @@
+.container {
+  margin: 40px auto;
+  padding: 16px 24px;
+  width: fit-content;
+  text-align: center;
+  border: 1px solid #fca5a5;
+  background-color: #fef2f2;
+  border-radius: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  color: #b91c1c;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.text {
+  color: #dc2626;
+  font-size: 14px;
+}

@@ -11,6 +11,8 @@ import { Droppable } from '../../components/Dropable';
 import styles from './BoardColumn.module.css';
 import TaskCard from '../../components/TaskCard/TaskCard';
 import AddTaskModal from '../../components/NewTaskModalForm/NewTaskModal';
+import { ClipLoader } from 'react-spinners';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 export default function BoardColumn() {
   const { id: boardId } = useParams<{ id: string }>();
@@ -19,7 +21,7 @@ export default function BoardColumn() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { data, isPending, error } = useQuery<Task[]>({
+  const { data, isPending, error, refetch } = useQuery<Task[]>({
     queryKey: ['tasks', boardId],
     queryFn: () => getTasks(boardId!),
     enabled: !!boardId,
@@ -61,8 +63,21 @@ export default function BoardColumn() {
     }
   };
 
-  if (isPending) return <p>Loading tasks...</p>;
-  if (error) return <p>Failed to load tasks</p>;
+  if (isPending)
+    return (
+      <div className={styles.loaderBox}>
+        <ClipLoader />
+      </div>
+    );
+  if (error)
+    return (
+      <div className={styles.errorBox}>
+        <ErrorMessage message="Ooops...There was an error while getting tasks" />
+        <button className={styles.tryAgainBtn} onClick={() => refetch()}>
+          Try Again
+        </button>
+      </div>
+    );
 
   const todo = data?.filter((task) => task.status === 'ToDo') ?? [];
   const inProgress = data?.filter((task) => task.status === 'In Progress') ?? [];

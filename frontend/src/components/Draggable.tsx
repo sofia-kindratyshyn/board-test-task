@@ -4,15 +4,27 @@ import type { ReactNode } from 'react';
 
 export function Draggable({ id, children }: { id: string; children: ReactNode }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: id,
+    id,
   });
+
   const style = {
     transform: CSS.Translate.toString(transform),
   };
 
   return (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onPointerDownCapture={(e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-no-dnd]')) {
+          e.stopPropagation();
+        }
+      }}
+    >
       {children}
-    </button>
+    </div>
   );
 }

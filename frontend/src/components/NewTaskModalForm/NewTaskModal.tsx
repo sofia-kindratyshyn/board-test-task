@@ -4,6 +4,7 @@ import AddTaskForm from '../AddTaskForm/AddTaskForm';
 import { toast } from 'react-toastify';
 import type { Task } from '../../types/task';
 import { createTask, updateTask } from '../../services/taskService';
+import { useCreateTaskState } from '../../states/createTaskState';
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ export default function AddTaskModal({
   onClose,
   boardId,
 }: AddTaskModalProps) {
+  const { cleanCreateTaskData } = useCreateTaskState();
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -43,6 +46,7 @@ export default function AddTaskModal({
       }
       onTaskSaved(response.data);
       toast.success(initialData?._id ? 'Task updated!' : 'Task created!');
+      cleanCreateTaskData();
     } catch (error: unknown) {
       if (error instanceof Error) toast.error(error.message);
       else toast.error('Ooops, there was some error');

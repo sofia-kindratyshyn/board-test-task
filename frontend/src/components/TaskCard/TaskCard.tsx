@@ -30,6 +30,7 @@ export default function TaskCard({ id, title, description, onDelete, onUpdate }:
               e.stopPropagation();
               if (id && onDelete) onDelete(id);
             }}
+            data-no-dnd
           >
             Delete
           </button>
@@ -40,6 +41,7 @@ export default function TaskCard({ id, title, description, onDelete, onUpdate }:
               e.stopPropagation();
               if (id && onUpdate) onUpdate(id);
             }}
+            data-no-dnd
           >
             Update
           </button>

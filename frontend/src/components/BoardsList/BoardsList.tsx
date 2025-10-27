@@ -7,6 +7,8 @@ import BoardSearch from '../BoardSearch/BoardSearch';
 import { useDebounce } from 'use-debounce';
 import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import { ClipLoader } from 'react-spinners';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
 export default function BoardsList() {
   const [searchValue, setSearchValue] = useState('');
@@ -14,7 +16,7 @@ export default function BoardsList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { isPending, error, data } = useQuery<Board[]>({
+  const { isPending, error, data, refetch } = useQuery<Board[]>({
     queryKey: ['boards', debounceValue],
     queryFn: () => getBoards(debounceValue),
     placeholderData: keepPreviousData,
@@ -33,8 +35,21 @@ export default function BoardsList() {
     },
   });
 
-  if (error) return <div>There was an error while getting boards</div>;
-  if (isPending) return <p>Loading...</p>;
+  if (error)
+    return (
+      <div>
+        <ErrorMessage message="Ooops...There was an error while getting boards" />
+        <button className={styles.tryAgainBtn} onClick={() => refetch()}>
+          Try Again
+        </button>
+      </div>
+    );
+  if (isPending)
+    return (
+      <div className={styles.loaderBox}>
+        <ClipLoader />
+      </div>
+    );
 
   return (
     <div className={styles.container}>
