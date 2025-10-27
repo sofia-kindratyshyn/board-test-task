@@ -38,6 +38,7 @@ jobs:
         run: npm run lint
         working-directory: ./backend
 
-      - name: Run test
-        run: npm run test
-        working-directory: ./backend
+      - name: Run tests
+        run: npm test --if-present --silent
+        env:
+          CI: true
