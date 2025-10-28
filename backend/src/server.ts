@@ -1,27 +1,43 @@
 import express from 'express';
-import { getEnvVar } from './utils/getEnv';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import pino from 'pino-http';
 import { errorHandler } from './middlewars/errorHandler';
+import { boardRouter } from './routers/board';
+import { taskRouter } from './routers/task';
+import { getEnvVar } from './utils/getEnv';
+import { app } from './app';
 
 const PORT = Number(getEnvVar('PORT'));
 
 export default async function setupServer() {
-  const app = express();
-
   app.use(express.json());
 
+  const allowedOrigins = [
+    'https://board-test-task.onrender.com',
+    'http://localhost:5173',
+  ];
+
   app.use(
-    cors(),
-    pino({
-      transport: {
-        target: 'pino-pretty',
+    cors({
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
       },
+      credentials: true,
     }),
   );
 
-  app.use(cookieParser());
+  app.use(
+    pino({
+      transport: { target: 'pino-pretty' },
+    }),
+  );
+
+  app.use('/boards', boardRouter);
+  app.use('/tasks', taskRouter);
 
   app.use(errorHandler);
 
