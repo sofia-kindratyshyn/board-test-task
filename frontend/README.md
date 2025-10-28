@@ -1,167 +1,74 @@
-# 🎨 TaskBoards Frontend (React + TypeScript + Vite)
+🧭 TaskBoards — React + TypeScript + Vite
 
-This is the **frontend** part of the TaskBoards project — a simple and elegant web application for creating boards, organizing tasks, and improving productivity.
+This project is a frontend part of TaskBoards, a minimal and intuitive task management app that allows you to create boards, add tasks, and manage them visually using drag and drop.
 
-Built with:
+🚀 Tech Stack
 
-- ⚛️ **React 18**
-- 🌀 **Vite**
-- 🧩 **TypeScript**
-- 🎨 **CSS Modules**
-- 🔁 **TanStack Query**
-- 🧭 **React Router v6**
+⚛️ React + TypeScript
 
----
+⚡ Vite for fast builds and HMR
 
-## 🚀 Features
+🎯 React Query (TanStack Query) for data fetching and caching
 
-✅ Fast and lightweight setup powered by **Vite**
-✅ **TypeScript** for strict typing and safety
-✅ Modular **CSS Modules** styling
-✅ Organized code with **components**, **pages**, and **services**
-✅ API integration via **Axios**
-✅ React Query for optimized data fetching
-✅ Routing with **React Router**
-✅ Clean folder structure for scalability
+🎨 CSS Modules for component-level styling
 
----
+🔄 Axios for API communication
 
-## 📦 Installation
+🧩 @dnd-kit/core for Drag & Drop functionality
 
-Clone the repository and install dependencies:
+🧠 Zustand for lightweight global state
 
-```bash
-# Clone repository
-git clone https://github.com/your-username/taskboards.git
+🔔 React Toastify for user notifications
 
-# Navigate to frontend folder
-cd frontend
+🛠️ Installation & Setup
 
-# Install dependencies
+Clone the repository
+
+git clone https://github.com/sofia-kindratyshyn/board-test-task.git
+cd board-test-task/frontend
+
+Install dependencies
+
 npm install
-```
 
----
+Create .env file
 
-## 🧑‍💻 Development
+NEXT_PUBLIC_API_URL=http://localhost:3000
 
-Run the project in development mode with hot reload (HMR):
+Run the app
 
-```bash
 npm run dev
-```
 
-Then open:
-👉 **[http://localhost:5173](http://localhost:5173)**
+✅ How to Test the Functionality
 
----
+To verify that everything works correctly:
 
-## 🏗️ Build for production
+Create a new board
+→ Click on the “Create Board” button on the home screen.
+→ Fill in the board name and description, then save.
 
-To create a production build:
+Open the created board by ID
+→ You’ll be redirected to the board page (/board/:boardId).
+→ The board title and task columns (“ToDo”, “In Progress”, “Done”) will appear.
 
-```bash
-npm run build
-```
+Add a new task
+→ Click “+ Create task for this board”.
+→ Fill in the title, description, and status.
+→ Save the task — it will appear in the respective column.
 
-Then preview it locally:
+Try Drag & Drop
+→ Drag a task card from one column to another.
+→ The status should update automatically.
 
-```bash
-npm run preview
-```
+🧩 Optional Commands
+Command Description
+npm run build Build for production
+npm run lint Run ESLint
+npm run preview Preview the production build
+🧰 Developer Notes
 
----
+If you encounter the error
+Cannot find name 'process',
+install Node type definitions:
 
-## ⚙️ Environment Variables
-
-Create a `.env` file in the `frontend/` directory with your API base URL:
-
-```
-VITE_API_URL=http://localhost:3000
-```
-
-In code, you can access it as:
-
-```ts
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
-```
-
----
-
-## 🧰 Scripts
-
-| Command           | Description              |
-| ----------------- | ------------------------ |
-| `npm run dev`     | Start dev server         |
-| `npm run build`   | Build production bundle  |
-| `npm run preview` | Preview production build |
-| `npm run lint`    | Run ESLint               |
-
----
-
-## 🧩 ESLint Configuration
-
-The project uses ESLint with TypeScript and React support.
-You can expand it to include type-aware rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [tseslint.configs.recommendedTypeChecked, tseslint.configs.stylisticTypeChecked],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-]);
-```
-
-You can also add extra plugins:
-
-- [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x)
-- [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom)
-
----
-
-## 🧱 Folder Structure
-
-```
-frontend/
-├── public/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   ├── types/
-│   ├── App.tsx
-│   └── main.tsx
-├── .eslintrc.cjs
-├── tsconfig.json
-└── vite.config.ts
-```
-
----
-
-## 🧭 Tech Stack
-
-| Tool               | Purpose       |
-| ------------------ | ------------- |
-| **React**          | UI library    |
-| **Vite**           | Build tool    |
-| **TypeScript**     | Type safety   |
-| **TanStack Query** | Data fetching |
-| **Axios**          | API requests  |
-| **React Router**   | Navigation    |
-| **CSS Modules**    | Styling       |
-
----
-
-## 💡 Future Improvements
-
-- [ ] Add dark/light theme switch
-- [ ] Add authentication and user profiles
-- [ ] Improve board filtering and search
+npm i --save-dev @types/node

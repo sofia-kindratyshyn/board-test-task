@@ -1,0 +1,90 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  background-color: #f7faff;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.title {
+  color: #1e40af;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 80%;
+}
+
+.tryAgainBtn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: center;
+}
+
+.column {
+  background-color: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.05);
+}
+
+.columnTitle {
+  color: #1e3a8a;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.createBtn {
+  background-color: #1e3a8a;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+  color: #eff6ff;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+  align-self: center;
+  margin-top: 30px;
+}
+
+.columnContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.columnContainer p {
+  color: gray;
+}
+
+.boardHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  align-items: center;
+}
+
+.backButton {
+  height: min-content;
+  background-color: #c7f2fc;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
