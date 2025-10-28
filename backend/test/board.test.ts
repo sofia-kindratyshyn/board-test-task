@@ -1,17 +1,18 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { app } from '../src/app';
+import { app } from '../test/test.app';
 import { Board } from '../src/models/board';
 import { Task } from '../src/models/task';
 import { Server } from 'http';
 
 let mongoServer: MongoMemoryServer;
 let server: Server;
-let boardId: string; // ✅ глобальна змінна
+let boardId: string;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
+  jest.spyOn(console, 'error').mockImplementation(() => {});
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
   console.log('✅ Connected to in-memory MongoDB');
@@ -20,7 +21,7 @@ beforeAll(async () => {
     name: 'Test Board',
   });
 
-  boardId = board._id.toString(); // ✅ зберігаємо для тестів
+  boardId = board._id.toString();
 
   await Task.create([
     {
@@ -50,6 +51,7 @@ afterAll(async () => {
 
 describe('GET /boards/:boardId', () => {
   it('should return board with its tasks', async () => {
+    await new Promise((r) => setTimeout(r, 200));
     const response = await request(app).get(`/boards/${boardId}`);
     console.log('Board ID:', boardId);
     console.log('Response status:', response.status);
